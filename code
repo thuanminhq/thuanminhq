@@ -1,0 +1,53 @@
+- 👋 Hi, I’m @thuanminhq
+-#include <LiquidCrystal_I2C.h>
+#include <Wire.h>
+LiquidCrystal_I2C lcd(0x27, 16, 2);
+const int trig = 9; // chan triger cua HCSR04
+const int echo = 8; //chan echo cua HCSR04
+const int inA1 = 13;
+const int inA2 = 12;
+const int enA = 11;
+void setup() 
+{
+ lcd.init();
+ lcd.backlight();
+ pinMode(trig,OUTPUT);  //chan trig phat tin hieu
+ pinMode(echo,INPUT); //chan echo nhan tin hieu
+ pinMode(inA1,OUTPUT);
+ pinMode(inA2,OUTPUT);
+ lcd.setCursor(0,0); // vi tri con tro chuot
+ lcd.print("A");
+ lcd.setCursor(0,1);
+ lcd.print("B");
+ delay(3000);
+ lcd.setCursor(0,0);
+ lcd.print("khoang cach    ");
+}
+ int t; //bien do thoi gian
+ float s; // bien do khoang cach
+void loop() 
+{
+ digitalWrite(trig,LOW); 
+ delayMicroseconds(2);
+ digitalWrite(trig,HIGH);
+ delayMicroseconds(10);
+ digitalWrite(trig,LOW); 
+ t = pulseIn(echo,HIGH); // Doc thoi gian chan echo nhan tin hieu
+ s = 0.0344*(t/2);
+ lcd.setCursor(0,1);
+ lcd.print(s); // in ra bien s
+ lcd.setCursor(5,1);
+ lcd.print("(cm)   ");
+ delay(200);
+ analogWrite(enA,200);
+  if(s>20)
+  {
+   digitalWrite(inA1,LOW);
+   digitalWrite(inA2,HIGH);
+  }
+  else
+  {
+    digitalWrite(inA1,HIGH);
+    digitalWrite(inA2,LOW);
+  }
+}
